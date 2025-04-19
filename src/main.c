@@ -10,6 +10,8 @@
 #include "myshell.h"
 #define ORANGE "\033[38;5;208m"
 #define RESET "\033[0m"
+#define HACKER_GREEN "\033[1;32m"
+#define CLEAR_SCREEN "clear"
 
 void myshell_loop() {
     char *input;
@@ -18,11 +20,12 @@ void myshell_loop() {
     char prompt[2048];
 
     while (1) {
+        
         if (getcwd(cwd, sizeof(cwd)) != NULL) {
             struct passwd *pw = getpwuid(getuid());
             char hostname[HOST_NAME_MAX + 1];
             gethostname(hostname, sizeof(hostname));
-            snprintf(prompt, sizeof(prompt), ORANGE "\033[1;36m%s@%s\033[0m:\033[1;32m%s" RESET "$ ", pw->pw_name, hostname, cwd);
+            snprintf(prompt, sizeof(prompt),HACKER_GREEN"%s@%s:%s$ "RESET,pw->pw_name, hostname, cwd);
         } else {
             perror("getcwd() error");
             continue;
@@ -52,6 +55,14 @@ void myshell_loop() {
     }
 }
 int main() {
+    system("cmatrix -u 1 -C green & sleep 2; killall cmatrix > /dev/null 2>&1");
+    system(CLEAR_SCREEN);
+    system("neofetch");
+    printf("\n" HACKER_GREEN
+        "╔═════════════════════════════════╗\n"
+        "║       Welcome to MyShell        ║\n"
+        "╚═════════════════════════════════╝\n\n" RESET);
+
     myshell_loop();
     return 0;
 }
