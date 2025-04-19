@@ -16,6 +16,8 @@
 - 🐧 Designed for Linux / WSL environments
 - 🐧 Runs all the sudo commands
 - 🔧 Supports all `cd` commands and command history
+- 📦 Able to launch full-screen terminal apps like vim, htop, etc.
+- 🧠 Autocomplete with file suggestions using `alt`
 ## 📦 Dependencies
 
 - GCC
