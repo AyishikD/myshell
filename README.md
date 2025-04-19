@@ -27,7 +27,7 @@
 ### Install dependencies (Ubuntu/Debian):
 ```bash
 sudo apt update
-sudo apt install build-essential libreadline-dev
+sudo apt install build-essential libreadline-dev cmatrix neofetch
 ```
 
 ## 🛠️ Build Instructions
