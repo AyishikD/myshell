@@ -29,7 +29,6 @@ void execute_command(char **args) {
         return;
     }
 
-    // Check for background execution
     int i = 0;
     while (args[i] != NULL) i++;
     if (i > 0 && strcmp(args[i - 1], "&") == 0) {
@@ -37,7 +36,6 @@ void execute_command(char **args) {
         args[i - 1] = NULL;
     }
 
-    // Split command by pipes
     char *commands[20][MAX_ARGS];
     int num_cmds = 0;
     int arg_idx = 0;
@@ -53,7 +51,6 @@ void execute_command(char **args) {
     commands[num_cmds][arg_idx] = NULL;
     num_cmds++;
 
-    // Check redirection in last command
     for (i = 0; commands[num_cmds - 1][i] != NULL; i++) {
         if (strcmp(commands[num_cmds - 1][i], "<") == 0 && commands[num_cmds - 1][i + 1]) {
             input_file = fopen(commands[num_cmds - 1][i + 1], "r");
@@ -90,26 +87,21 @@ void execute_command(char **args) {
     for (i = 0; i < num_cmds; i++) {
         pid_t pid = fork();
         if (pid == 0) {
-            // Input from previous pipe
             if (i > 0) {
                 dup2(pipe_fd[(i - 1) * 2], 0);
             }
-            // Output to next pipe
             if (i < num_cmds - 1) {
                 dup2(pipe_fd[i * 2 + 1], 1);
             }
 
-            // Input redirection
             if (i == 0 && input_file) {
                 dup2(fileno(input_file), STDIN_FILENO);
             }
 
-            // Output redirection
             if (i == num_cmds - 1 && output_file) {
                 dup2(fileno(output_file), STDOUT_FILENO);
             }
 
-            // Close all pipe fds in child
             for (int j = 0; j < 2 * (num_cmds - 1); j++) {
                 close(pipe_fd[j]);
             }
@@ -132,7 +124,6 @@ void execute_command(char **args) {
         }
     }
 
-    // Parent closes all fds
     for (i = 0; i < 2 * (num_cmds - 1); i++) {
         close(pipe_fd[i]);
     }
@@ -174,6 +165,6 @@ void handle_jobs(char **args) {
     if (args[0] != NULL && strcmp(args[0], "kill") == 0 && args[1] != NULL) {
         pid_t pid = atoi(args[1]);
         kill(pid, SIGTERM);
-        printf("Deleted job");  // Kill the process
+        printf("Deleted job");  
     }
 }
